@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProductClientHub.API.UseCases.Register;
+using ProductClientHub.Communication.Requests;
+using ProductClientHub.Communication.Responses;
 
 namespace ProductClientHub.API.Controllers;
 [Route("api/[controller]")]
@@ -7,9 +10,26 @@ namespace ProductClientHub.API.Controllers;
 public class ClientsController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Register()
+    [ProducesResponseType(typeof(ResponseClientJson), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ResponseErrorMessagesJson), StatusCodes.Status400BadRequest)]
+    public IActionResult Register([FromBody] RequestClientJson request)
     {
-        return Ok();
+        try
+        {
+            var useCase = new RegisterClientUseCase();
+
+            var response = useCase.Execute(request);
+
+            return Created(string.Empty, response);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new ResponseErrorMessagesJson(ex.Message));
+        }
+        catch 
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorMessagesJson("Erro desconhecido."));
+        }
     }
 
     [HttpPut]
@@ -26,7 +46,7 @@ public class ClientsController : ControllerBase
 
     [HttpGet]
     [Route("{id}")]
-    public IActionResult GetById(Guid id)
+    public IActionResult GetById([FromRoute] Guid id)
     {
         return Ok();
     }
