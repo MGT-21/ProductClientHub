@@ -8,7 +8,7 @@ public class RegisterClientValidator : AbstractValidator<RequestClientJson>
     public RegisterClientValidator()
     {
         RuleFor(client => client.Name).NotEmpty().WithMessage("O nome do cliente é obrigatório.");
-        RuleFor(client => client.Email).EmailAddress().WithMessage("O email é obrigatório.");
+        RuleFor(client => client.Email).EmailAddress().WithMessage("O email informado é inválido .");
        
     }
 }
