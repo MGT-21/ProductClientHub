@@ -15,6 +15,7 @@ public class RegisterClientUseCase
         if (result.IsValid == false)
         {
             var errors = result.Errors.Select(failure => failure.ErrorMessage).ToList();
+
             throw new ErrorOnValidationException(errors);
         }
 
